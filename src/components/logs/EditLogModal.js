@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import M from 'materialize-css/dist/js/materialize.min.js';
+import { updateLog } from '../../actions/logActions';
+import PersonSelectOptions from '../persons/PersonSelectOptions';
 
-const EditLogModal = () => {
+const EditLogModal = ({ current, updateLog }) => {
   const style = { width: '75%', height: '75%' };
 
   const [message, setMessage] = useState('');
   const [attention, setAttention] = useState(false);
   const [person, setPerson] = useState('');
+
+  useEffect(() => {
+    if (current) {
+      setMessage(current.message);
+      setAttention(current.attention);
+      setPerson(current.person);
+    }
+  }, [current]);
 
   const onSubmit = () => {
     if (message === '' && person === '') {
@@ -18,7 +30,15 @@ const EditLogModal = () => {
     if (person === '') {
       return M.toast({ html: 'Please select a person' });
     }
-    console.log(message, person, attention);
+    const uLog = {
+      id: current.id,
+      message,
+      attention,
+      person,
+      date: new Date(),
+    };
+    updateLog(uLog);
+    M.toast({ html: `Log updated by ${person}` });
     setMessage('');
     setPerson('');
     setAttention(false);
@@ -36,9 +56,11 @@ const EditLogModal = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
+            {/* {current && !current.message && (
             <label htmlFor='message' className='active'>
               Log Message
             </label>
+            )} */}
           </div>
         </div>
 
@@ -52,9 +74,7 @@ const EditLogModal = () => {
               <option value='' disabled>
                 Select Person
               </option>
-              <option value='Leeloo The Fifth'>Leeloo The Fifth</option>
-              <option value='Korben Dallas'>Korben Dallas</option>
-              <option value='Vito Cornelius'>Vito Cornelius</option>
+              <PersonSelectOptions />
             </select>
           </div>
 
@@ -89,4 +109,13 @@ const EditLogModal = () => {
   );
 };
 
-export default EditLogModal;
+EditLogModal.propTypes = {
+  current: PropTypes.object,
+  updateLog: PropTypes.func.isRequired,
+};
+
+const mapProps = (state) => ({
+  current: state.log.current,
+});
+
+export default connect(mapProps, { updateLog })(EditLogModal);

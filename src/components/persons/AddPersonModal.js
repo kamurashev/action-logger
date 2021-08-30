@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import M from 'materialize-css/dist/js/materialize.min.js';
+import { addPerson } from '../../actions/personActions';
 
-const AddPersonModal = () => {
+const AddPersonModal = ({ addPerson }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
@@ -15,7 +18,8 @@ const AddPersonModal = () => {
     if (lastName === '') {
       return M.toast({ html: 'Please select the last name' });
     }
-    console.log(firstName, lastName);
+    addPerson({ firstName, lastName });
+    M.toast({ html: `${firstName} ${lastName} has been added to the known persons list` });
     setFirstName('');
     setLastName('');
   };
@@ -65,4 +69,8 @@ const AddPersonModal = () => {
   );
 };
 
-export default AddPersonModal;
+AddPersonModal.propTypes = {
+  addPerson: PropTypes.func.isRequired,
+};
+
+export default connect(null, { addPerson })(AddPersonModal);

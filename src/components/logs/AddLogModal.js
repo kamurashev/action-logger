@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import M from 'materialize-css/dist/js/materialize.min.js';
+import { addLog } from '../../actions/logActions';
+import PersonSelectOptions from '../persons/PersonSelectOptions';
 
-const AddLogModal = () => {
+const AddLogModal = ({ addLog }) => {
   const style = { width: '75%', height: '75%' };
 
   const [message, setMessage] = useState('');
@@ -18,7 +22,16 @@ const AddLogModal = () => {
     if (person === '') {
       return M.toast({ html: 'Please select a person' });
     }
-    console.log(message, person, attention);
+    const newLog = {
+      message,
+      attention,
+      person,
+      date: new Date(),
+    };
+    addLog(newLog);
+
+    M.toast({ html: `Log added by ${person}` });
+
     setMessage('');
     setPerson('');
     setAttention(false);
@@ -52,9 +65,7 @@ const AddLogModal = () => {
               <option value='' disabled>
                 Select Person
               </option>
-              <option value='Leeloo The Fifth'>Leeloo The Fifth</option>
-              <option value='Korben Dallas'>Korben Dallas</option>
-              <option value='Vito Cornelius'>Vito Cornelius</option>
+              <PersonSelectOptions />
             </select>
           </div>
 
@@ -89,4 +100,8 @@ const AddLogModal = () => {
   );
 };
 
-export default AddLogModal;
+AddLogModal.propTypes = {
+  addLog: PropTypes.func.isRequired,
+};
+
+export default connect(null, { addLog })(AddLogModal);
