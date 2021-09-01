@@ -9,7 +9,7 @@ import {
 const getPersons = () => async (dispatch) => {
   try {
     setLoading();
-    const res = await fetch('/persons');
+    const res = await fetch(`${process.env.PUBLIC_URL}/api/persons`);
     const data = await res.json();
     dispatch({ type: GET_PERSONS, payload: data });
   } catch (err) {
@@ -20,7 +20,7 @@ const getPersons = () => async (dispatch) => {
 const addPerson = (person) => async (dispatch) => {
   try {
     setLoading();
-    const res = await fetch('/persons', {
+    const res = await fetch(`${process.env.PUBLIC_URL}/api/persons` , {
       method: 'POST',
       body: JSON.stringify(person),
       headers: { 'Content-Type': 'application/json' },
@@ -35,7 +35,7 @@ const addPerson = (person) => async (dispatch) => {
 const deletePerson = (id) => async (dispatch) => {
   try {
     setLoading();
-    await fetch(`/persons/${id}`, {method: 'DELETE'});
+    await fetch(`${process.env.PUBLIC_URL}/api/persons/${id}`, {method: 'DELETE'});
     dispatch({ type: DELETE_PERSON, payload: id });
   } catch (err) {
     dispatch({ type: PERSONS_ERROR, payload: err.response.statusText });

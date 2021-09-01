@@ -13,7 +13,7 @@ import {
 const getLogs = () => async (dispatch) => {
   try {
     setLoading();
-    const res = await fetch('/logs');
+    const res = await fetch(`${process.env.PUBLIC_URL}/api/logs`);
     const data = await res.json();
     dispatch({ type: GET_LOGS, payload: data });
   } catch (err) {
@@ -24,7 +24,7 @@ const getLogs = () => async (dispatch) => {
 const searchLogs = (query) => async (dispatch) => {
   try {
     setLoading();
-    const res = await fetch(`/logs?q=${query}`);
+    const res = await fetch(`${process.env.PUBLIC_URL}/api/logs?q=${query}`);
     const data = await res.json();
     dispatch({ type: SEARCH_LOGS, payload: data });
   } catch (err) {
@@ -35,7 +35,7 @@ const searchLogs = (query) => async (dispatch) => {
 const addLog = (log) => async (dispatch) => {
   try {
     setLoading();
-    const res = await fetch('/logs', {
+    const res = await fetch(`${process.env.PUBLIC_URL}/api/logs`, {
       method: 'POST',
       body: JSON.stringify(log),
       headers: { 'Content-Type': 'application/json' },
@@ -50,7 +50,7 @@ const addLog = (log) => async (dispatch) => {
 const updateLog = (log) => async (dispatch) => {
   try {
     setLoading();
-    const res = await fetch(`/logs/${log.id}`, {
+    const res = await fetch(`${process.env.PUBLIC_URL}/api/logs/${log.id}`, {
       method: 'PUT',
       body: JSON.stringify(log),
       headers: { 'Content-Type': 'application/json' },
@@ -65,7 +65,7 @@ const updateLog = (log) => async (dispatch) => {
 const deleteLog = (id) => async (dispatch) => {
   try {
     setLoading();
-    await fetch(`/logs/${id}`, { method: 'DELETE' });
+    await fetch(`${process.env.PUBLIC_URL}/api/logs/${id}`, { method: 'DELETE' });
     dispatch({ type: DELETE_LOG, payload: id });
   } catch (err) {
     dispatch({ type: LOGS_ERROR, payload: err.response.statusText });
